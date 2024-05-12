@@ -1,11 +1,21 @@
 import pandas as pd
 
-def readBookInformations():
+# Read CSV functions #
+def getBookInformations(isbn):
     booksCsv = "source/books.csv"
     cols_to_read = ["ISBN", "Book-Title"]
-    return pd.read_csv(booksCsv, usecols=cols_to_read, encoding='ISO-8859-1', delimiter=';')
+    dfBooks = pd.read_csv(booksCsv, usecols=cols_to_read, encoding='ISO-8859-1', delimiter=';')
+    filterISBN = dfBooks["ISBN"] == isbn
+    return dfBooks[filterISBN]
 
-def readRatings(isbn):
+def getBooks(author):
+    booksCsv = "source/books.csv"
+    cols_to_read = ["ISBN", "Book-Title", "Book-Author", "Year-Of-Publication"]
+    dfBooks = pd.read_csv(booksCsv, usecols=cols_to_read, encoding='ISO-8859-1', delimiter=';')
+    filterISBN = dfBooks["Book-Author"] == author
+    return dfBooks[filterISBN].sort_values(by='Year-Of-Publication')
+
+def getRatings(isbn):
     path_ratings = "source/ratings.csv"
     ratings = pd.read_csv(path_ratings, encoding='ISO-8859-1', delimiter=';')
     filterISBN = ratings["ISBN"] == isbn
@@ -13,16 +23,27 @@ def readRatings(isbn):
     filterNoVote = filteredRatings["Book-Rating"] > 0
     return filteredRatings[filterNoVote]
 
-bookHarryPotter1 = '059035342X'
 
-# Read books
-dfBooks = readBookInformations()
+# Prints functions #
+def printBookRatings(isbn):
+    dfBook = getBookInformations(isbn)
+    print(dfBook["Book-Title"].values)
 
-filterISBN = dfBooks["ISBN"] == bookHarryPotter1
-dfBooks = dfBooks[filterISBN]
+    dfRatings = getRatings(isbn)
+    print("Average rating =", + dfRatings["Book-Rating"].mean(), "for", len(dfRatings), "users")
+
+
+# Execution main code #
+author = "Neal Shusterman"
+dfBooks = getBooks(author)
 print(dfBooks)
 
-# Ratings > 0 from book
-dfRatings = readRatings(bookHarryPotter1)
+print("******")
 
-print("Average rating =", + dfRatings["Book-Rating"].mean(), "for", len(dfRatings), "users")
+isbnHarryPotter1 = '059035342X'
+printBookRatings(isbnHarryPotter1)
+
+print("******")
+
+isbnHarryPotter2 = '0439064872'
+printBookRatings(isbnHarryPotter2)
