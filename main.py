@@ -15,6 +15,10 @@ def getBooks(author):
     filterISBN = dfBooks["Book-Author"] == author
     return dfBooks[filterISBN].sort_values(by='Year-Of-Publication')
 
+def getRatingsAuthor(dfBooks):
+    for isbn in dfBooks["ISBN"].values:
+        printBookRatings(isbn)
+
 def getRatings(isbn):
     path_ratings = "source/ratings.csv"
     ratings = pd.read_csv(path_ratings, encoding='ISO-8859-1', delimiter=';')
@@ -37,6 +41,8 @@ def printBookRatings(isbn):
 author = "Neal Shusterman"
 dfBooks = getBooks(author)
 print(dfBooks)
+
+getRatingsAuthor(dfBooks)
 
 print("******")
 
