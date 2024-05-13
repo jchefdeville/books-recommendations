@@ -21,16 +21,27 @@ def getBookRatings(dfRatings):
     filterTitle = dfRatings["Title"] == bookName
     return dfRatings[filterTitle]
 
+def printTop10ReadCategories(dfBooks):
+    dfBookGroupByCategories = dfBooks.groupby("categories")
+    # Remove small categories
+    dfBookGroupByCategories = dfBookGroupByCategories.filter(lambda dfCategorie: len(dfCategorie) > 1)
+
+    # Print top10 categories read DESC
+    print(dfBookGroupByCategories["categories"].value_counts().head(10))
+
+
 
 # MAIN CODE #
 dfBooks = getBooks()
 # print(dfBooks.iloc[-1])
 
-dfAuthorBooks = getAuthorBooks(dfBooks, "")
-print(dfAuthorBooks)
+# dfAuthorBooks = getAuthorBooks(dfBooks, "")
+# print(dfAuthorBooks)
 
-dfRatings = getRatings()
-print(dfRatings.iloc[-1])
+# dfRatings = getRatings()
+# print(dfRatings.iloc[-1])
 
-dfBookRatings = getBookRatings(dfRatings)
-print(dfBookRatings)
+# dfBookRatings = getBookRatings(dfRatings)
+# print(dfBookRatings)
+
+printTop10ReadCategories(dfBooks)
