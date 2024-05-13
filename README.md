@@ -13,3 +13,5 @@ pip install -r requirements.txt
 ```
 python .\main.py
 ```
+
+Project started on 05/12/2024
