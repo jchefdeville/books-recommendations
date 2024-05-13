@@ -1,5 +1,8 @@
 import pandas as pd
 
+CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
+CSV_BOOK_COLUMN_CATEGORIES = "categories"
+
 # Read CSV functions #
 def getBooks():
     booksCsv = "datas/amazon_books.csv"
@@ -13,7 +16,7 @@ def getAuthorBooks(dfBooks, author):
     authors = "['Neal Shusterman']"
     print("Filter by authors" + authors)
     filterAuthors = dfBooks["authors"] == authors
-    return dfBooks[filterAuthors].sort_values(by='publishedDate')
+    return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
 
 def getBookRatings(dfRatings):
     bookName = "Dark Matter"
@@ -22,12 +25,13 @@ def getBookRatings(dfRatings):
     return dfRatings[filterTitle]
 
 def printTop10ReadCategories(dfBooks):
-    dfBookGroupByCategories = dfBooks.groupby("categories")
+    print("Filter by categories")
+    dfBookGroupByCategories = dfBooks.groupby(CSV_BOOK_COLUMN_CATEGORIES)
     # Remove small categories
     dfBookGroupByCategories = dfBookGroupByCategories.filter(lambda dfCategorie: len(dfCategorie) > 1)
 
     # Print top10 categories read DESC
-    print(dfBookGroupByCategories["categories"].value_counts().head(10))
+    print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(10))
 
 
 
