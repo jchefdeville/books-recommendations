@@ -2,6 +2,10 @@ import pandas as pd
 
 CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
 CSV_BOOK_COLUMN_CATEGORIES = "categories"
+CSV_BOOK_COLUMN_AUTHORS = "authors"
+CSV_BOOK_COLUMN_RATINGS_COUNT = "ratingsCount"
+
+CSV_RATING_COLUMN_BOOK_TITLE = "Title"
 
 # Read CSV functions #
 def getBooks():
@@ -15,13 +19,13 @@ def getRatings():
 def getAuthorBooks(dfBooks, author):
     authors = "['Neal Shusterman']"
     print("Filter by authors" + authors)
-    filterAuthors = dfBooks["authors"] == authors
+    filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS] == authors
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
 
 def getBookRatings(dfRatings):
     bookName = "Dark Matter"
     print("Filter by bookName" + bookName)
-    filterTitle = dfRatings["Title"] == bookName
+    filterTitle = dfRatings[CSV_RATING_COLUMN_BOOK_TITLE] == bookName
     return dfRatings[filterTitle]
 
 def printTop10ReadCategories(dfBooks):
@@ -32,6 +36,13 @@ def printTop10ReadCategories(dfBooks):
 
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(10))
+
+def printTop30ReadFiction(dfBooks):
+    filterCategoriesFiction = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == "['Fiction']"
+    dfBooksCategoriesFiction = dfBooks[filterCategoriesFiction]
+    dfBooksCategoriesFiction_sorted = dfBooksCategoriesFiction.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
+
+    print(dfBooksCategoriesFiction_sorted.head(30))
 
 
 
@@ -49,3 +60,5 @@ dfBooks = getBooks()
 # print(dfBookRatings)
 
 printTop10ReadCategories(dfBooks)
+
+printTop30ReadFiction(dfBooks)
