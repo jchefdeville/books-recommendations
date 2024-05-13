@@ -79,24 +79,3 @@ print("******")
 
 isbnHarryPotter2 = '0439064872'
 # printBookRatings(isbnHarryPotter2)
-
-
-
-
-
-
-
-
-# Remove long review text rating. 2,4Gb => 374Mb
-def removeReviewTextRating():
-
-    df = getRatings()
-
-    # Drop the column you want to remove
-    column_to_remove = "review/text"
-    df = df.drop(columns=[column_to_remove])
-
-    # Save the modified DataFrame back to a CSV file
-    df.to_csv("datas/amazon_ratings.csv", index=False)
-
-removeReviewTextRating()
