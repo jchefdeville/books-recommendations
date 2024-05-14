@@ -45,11 +45,19 @@ def printTopReadFiction(dfBooks):
 
     print(dfBooksCategoriesFiction_sorted.head(30))
 
-def printUserRatings(dfRatings):
+def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
     dfRatingsUserId = dfRatings[filterUserId]
 
     print(dfRatingsUserId)
+
+def printBestUsersRatings(dfRatings):
+    dfRatingsGroupByUserId = dfRatings[CSV_RATING_COLUMN_USER_ID].value_counts()
+    print(dfRatingsGroupByUserId.head(10))
+
+    userIdMostRatings = dfRatingsGroupByUserId.idxmax()
+    dfRatingsUserIdMostRatings = dfRatings[dfRatings[CSV_RATING_COLUMN_USER_ID] == userIdMostRatings]
+    print(dfRatingsUserIdMostRatings.head(50))
 
 
 
@@ -67,5 +75,6 @@ dfRatings = getRatings()
 
 # printTopReadFiction(dfBooks)
 
-printUserRatings(dfRatings)
+# printSpecificUserRatings(dfRatings)
 
+printBestUsersRatings(dfRatings)
