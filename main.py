@@ -6,6 +6,7 @@ CSV_BOOK_COLUMN_AUTHORS = "authors"
 CSV_BOOK_COLUMN_RATINGS_COUNT = "ratingsCount"
 
 CSV_RATING_COLUMN_BOOK_TITLE = "Title"
+CSV_RATING_COLUMN_USER_ID = "User_id"
 
 # Read CSV functions #
 def getBooks():
@@ -28,7 +29,7 @@ def getBookRatings(dfRatings):
     filterTitle = dfRatings[CSV_RATING_COLUMN_BOOK_TITLE] == bookName
     return dfRatings[filterTitle]
 
-def printTop10ReadCategories(dfBooks):
+def printTopReadCategories(dfBooks):
     print("Filter by categories")
     dfBookGroupByCategories = dfBooks.groupby(CSV_BOOK_COLUMN_CATEGORIES)
     # Remove small categories
@@ -37,28 +38,34 @@ def printTop10ReadCategories(dfBooks):
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
 
-def printTop30ReadFiction(dfBooks):
-    filterCategoriesFiction = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == "['Technology']"
+def printTopReadFiction(dfBooks):
+    filterCategoriesFiction = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == "['Fiction']"
     dfBooksCategoriesFiction = dfBooks[filterCategoriesFiction]
     dfBooksCategoriesFiction_sorted = dfBooksCategoriesFiction.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
 
     print(dfBooksCategoriesFiction_sorted.head(30))
 
+def printUserRatings(dfRatings):
+    filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
+    dfRatingsUserId = dfRatings[filterUserId]
+
+    print(dfRatingsUserId)
+
 
 
 # MAIN CODE #
-dfBooks = getBooks()
-# print(dfBooks.iloc[-1])
+# dfBooks = getBooks()
+dfRatings = getRatings()
 
 # dfAuthorBooks = getAuthorBooks(dfBooks, "")
 # print(dfAuthorBooks)
 
-# dfRatings = getRatings()
-# print(dfRatings.iloc[-1])
-
 # dfBookRatings = getBookRatings(dfRatings)
 # print(dfBookRatings)
 
-printTop10ReadCategories(dfBooks)
+# printTopReadCategories(dfBooks)
 
-printTop30ReadFiction(dfBooks)
+# printTopReadFiction(dfBooks)
+
+printUserRatings(dfRatings)
+
