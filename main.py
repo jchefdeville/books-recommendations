@@ -13,12 +13,11 @@ CSV_RATING_COLUMN_USER_ID = "User_id"
 app = Flask(__name__)
 
 # link python to front end
-# temporarily prints out the top fiction books in brec.html
+# temporarily prints out the top fiction books in brec.html>
 @app.route('/')
 def Brec():
     top_books_df = displayTopRev(getBooks(), 'Fiction')
-    top_books_html = top_books_df.to_html(index=False)
-    return render_template('Brec.html', top_books_html=top_books_html)
+    return render_template('Brec.html', top_books_df=top_books_df)
 
 # Read CSV functions #
 def getBooks():
@@ -63,10 +62,10 @@ def printTopRev(dfBooks, category : str):
     print(dfBooksCategories_sorted.head(30))
 
 def displayTopRev(dfBooks, category : str):
-    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
+    filterCategories = dfBooks['categories'] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
-    dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
-    return(dfBooksCategories_sorted.head(30))
+    dfBooksCategories_sorted = dfBooksCategories.sort_values(by='ratingsCount', ascending=False)
+    return dfBooksCategories_sorted.head(30)
 
 def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"

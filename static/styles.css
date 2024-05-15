@@ -1,7 +1,8 @@
-body {
-    background-color: lightblue;
+table {
+    border-collapse: collapse;
+    width: 100%;
 }
-
-h1 {
-    color: navy;
+th, td {
+    border: 1px solid black;
+    padding: 8px;
 }
