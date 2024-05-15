@@ -10,11 +10,11 @@ CSV_RATING_COLUMN_USER_ID = "User_id"
 
 # Read CSV functions #
 def getBooks():
-    booksCsv = "datas/amazon_books.csv"
+    booksCsv = "data/amazon_books.csv"
     return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
 
 def getRatings():
-    booksCsv = "datas/amazon_ratings.csv"
+    booksCsv = "data/amazon_ratings.csv"
     return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
 
 def getAuthorBooks(dfBooks, author):
@@ -38,12 +38,17 @@ def printTopReadCategories(dfBooks):
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
 
-def printTopReadFiction(dfBooks):
+def printTopRevFiction(dfBooks):
     filterCategoriesFiction = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == "['Fiction']"
     dfBooksCategoriesFiction = dfBooks[filterCategoriesFiction]
     dfBooksCategoriesFiction_sorted = dfBooksCategoriesFiction.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
-
     print(dfBooksCategoriesFiction_sorted.head(30))
+    
+def printTopRev(dfBooks, category : str):
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
+    dfBooksCategories = dfBooks[filterCategories]
+    dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
+    print(dfBooksCategories_sorted.head(30))
 
 def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
@@ -62,7 +67,7 @@ def printBestUsersRatings(dfRatings):
 
 
 # MAIN CODE #
-# dfBooks = getBooks()
+dfBooks = getBooks()
 dfRatings = getRatings()
 
 # dfAuthorBooks = getAuthorBooks(dfBooks, "")
@@ -73,8 +78,8 @@ dfRatings = getRatings()
 
 # printTopReadCategories(dfBooks)
 
-# printTopReadFiction(dfBooks)
+printTopRev(dfBooks, 'Fiction')
 
 # printSpecificUserRatings(dfRatings)
 
-printBestUsersRatings(dfRatings)
+# printBestUsersRatings(dfRatings)
