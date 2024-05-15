@@ -1,4 +1,4 @@
-# books-recommandation
+# books-recommendation
 
 Goal : Reccomending books with Python using Amazon Books Dataset from Kaggle website
 
