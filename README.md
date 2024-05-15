@@ -1,6 +1,6 @@
 # books-recommendation
 
-Goal : Reccomending books with Python using Amazon Books Dataset from Kaggle website
+Goal : Recommending books with Python using Amazon Books Dataset from Kaggle website
 
 Open for contribution, read opened issues
 
