@@ -43,12 +43,7 @@ def remove_duplicates(df):
     for index, row in df.iterrows():
         # Removes all special characters and everything inside parentheses for better comparison
         cleaned_title = re.sub(r'\([^()]*\)', '', row['Title']).strip()
-        
-        
-        # Checks similarity with other books
         similar_titles = [fuzz.ratio(cleaned_title.lower(), title.lower()) for title in unique_titles]
-        
-        
         if not any(similarity > 60 for similarity in similar_titles):
             unique_titles.append(cleaned_title)
             unique_rows.append(row)
