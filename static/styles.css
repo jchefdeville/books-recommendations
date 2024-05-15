@@ -1,8 +1,12 @@
 table {
     border-collapse: collapse;
-    width: 100%;
+    width : 100%;
 }
 th, td {
     border: 1px solid black;
     padding: 8px;
+}
+
+.description-column {
+    width: 50%; /* Adjust the width as needed */
 }
