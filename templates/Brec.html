@@ -1,10 +1,14 @@
 <!--TODO: add buttons for different filtering options, ensure that elipses allow you to expand the description-->
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Recommendation Page</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <style>.description-column {width: 500px;}</style>
 </head>
+
 <body>
     <h1>Welcome to the Book Recommendation Page</h1>
     <h2>Top Reviewed Books</h2>
@@ -21,21 +25,22 @@
                 <th>infoLink</th>
                 <th>Categories</th>
                 <th>ratingsCount</th>
-
-                <!-- Add other table headers as needed -->
             </tr>
         </thead>
         <tbody>
             {% for index, row in top_books_df.iterrows() %}
             <tr>
-                <td>{{ row['Title'] }}</td>
-                <td>{{ row['description'][:300] }}{% if row['description']|length > 300 %}...{% endif %}</td>
+                <td style = "width: 500px;">{{ row['Title'] }}</td>
+                <td class="description-column">
+                    <p class="description-column">{{ row['description'][:100] }}<span id="dots-{{ index }}">...</span><span id="more-{{ index }}" style="display: none;">{{ row['description'][100:] }}</span></p>
+                    <button onclick="toggleDescription('{{ index }}')" id="myBtn-{{ index }}">Read more</button>
+                </td>                
                 <td>{{ row['authors']|default('N/A') }}</td>
                 <td><img src="{{ row['image']|default('path_to_default_image') }}" alt="Book Image" width="200" height="300"></td>
-                <td>{{ row['previewLink']|default('N/A') }}</td>
+                <td><a href="{{ row['previewLink']|default('#') }}" target="_blank">Preview</a></td>
                 <td>{{ row['publisher']|default('N/A') }}</td>
                 <td>{{ row['publishedDate']|default('N/A') }}</td>
-                <td>{{ row['infoLink']|default('N/A') }}</td>
+                <td><a href="{{ row['infoLink']|default('#') }}" target="_blank">Info</a></td>
                 <td>{{ row['categories']|default('N/A') }}</td>
                 <td>{{ row['ratingsCount']|default('N/A') }}</td>
             </tr>
