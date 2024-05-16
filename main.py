@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 import pandas as pd
+from fuzzywuzzy import fuzz
+import re
 
 CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
 CSV_BOOK_COLUMN_CATEGORIES = "categories"
@@ -19,13 +21,34 @@ app = Flask(__name__)
 # temporarily prints out the top fiction books in brec.html>
 @app.route('/')
 def Brec():
-    top_books_df = getTopReviews(getBooks(), CATEGORY_FICTION)
-    return render_template('Brec.html', top_books_df=top_books_df)
+    top_books_df = getTopReviews(getBooks(), 'Fiction')
+    unique_books_df = remove_duplicates(top_books_df)
+    return render_template('Brec.html', top_books_df=unique_books_df)
+
+# detecting duplicates
+def titleCompare(title1, title2):
+    similarity = fuzz.ratio(title1.lower(), title2.lower())
+    # Adjust threshold as needed
+    return similarity > 80
 
 # Read CSV functions #
 def getBooks():
     booksCsv = "data/amazon_books.csv"
     return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
+
+def remove_duplicates(df):
+    unique_titles = []
+    unique_rows = []
+    for index, row in df.iterrows():
+        # Removes all special characters and everything inside parentheses for better comparison
+        cleaned_title = re.sub(r'\([^()]*\)', '', row['Title']).strip()
+        similar_titles = [fuzz.ratio(cleaned_title.lower(), title.lower()) for title in unique_titles]
+        if not any(similarity > 60 for similarity in similar_titles):
+            unique_titles.append(cleaned_title)
+            unique_rows.append(row)
+    # Creates a new DataFrame from the unique rows
+    unique_books = pd.DataFrame(unique_rows, columns=df.columns)
+    return unique_books
 
 def getRatings():
     booksCsv = "data/amazon_ratings.csv"
