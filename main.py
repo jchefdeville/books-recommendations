@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import pandas as pd
 from fuzzywuzzy import fuzz
 import re
@@ -21,9 +21,12 @@ app = Flask(__name__)
 # temporarily prints out the top fiction books in brec.html>
 @app.route('/')
 def Brec():
-    top_books_df = getTopReviews(getBooks(), 'Fiction')
+    # Get the page number from the query parameters, default to 1
+    page = request.args.get('page', default=1, type=int)
+    top_books_df = displayTopRev(getBooks(), 'Fiction', page)
     unique_books_df = remove_duplicates(top_books_df)
-    return render_template('Brec.html', top_books_df=unique_books_df)
+    return render_template('Brec.html', top_books_df=unique_books_df, page=page)
+
 
 # detecting duplicates
 def titleCompare(title1, title2):
@@ -75,6 +78,17 @@ def printTopReadCategories(dfBooks):
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
 
+
+    
+def displayTopRev(dfBooks, category : str, page : int):
+    filterCategories = dfBooks['categories'] == f"['{category}']"
+    dfBooksCategories = dfBooks[filterCategories]
+    pagelimit = 30
+    start = (page - 1) *pagelimit
+    end = start + pagelimit
+    dfBooksCategories_sorted = dfBooksCategories.sort_values(by='ratingsCount', ascending=False)
+    return dfBooksCategories_sorted.iloc[start:end]
+
 def getTopReviews(dfBooks, category : str):
     filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
@@ -97,6 +111,7 @@ def printTopBooksByReview(dfBooks, category : str, dfRatings):
     dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitleAverageScore.sort_values(ascending=False)
 
     print(dfBooksCategoriesRatingsGroupByTitleAverageScore.head(40))
+
 
 def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
