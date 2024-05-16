@@ -1,8 +1,5 @@
 from flask import Flask, render_template
 import pandas as pd
-from fuzzywuzzy import fuzz
-import re
-
 
 CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
 CSV_BOOK_COLUMN_CATEGORIES = "categories"
@@ -11,6 +8,9 @@ CSV_BOOK_COLUMN_RATINGS_COUNT = "ratingsCount"
 
 CSV_RATING_COLUMN_BOOK_TITLE = "Title"
 CSV_RATING_COLUMN_USER_ID = "User_id"
+CSV_RATING_COLUMN_REVIEW_SCORE = "review/score"
+
+CATEGORY_FICTION = "Fiction"
 
 # flask call
 app = Flask(__name__)
@@ -19,37 +19,13 @@ app = Flask(__name__)
 # temporarily prints out the top fiction books in brec.html>
 @app.route('/')
 def Brec():
-    top_books_df = displayTopRev(getBooks(), 'Fiction')
-    unique_books_df = remove_duplicates(top_books_df)
-    return render_template('Brec.html', top_books_df=unique_books_df)
-    
-
-# detecting duplicates
-def titleCompare(title1, title2):
-    similarity = fuzz.ratio(title1.lower(), title2.lower())
-    # Adjust threshold as needed
-    return similarity > 80 
-
+    top_books_df = getTopReviews(getBooks(), CATEGORY_FICTION)
+    return render_template('Brec.html', top_books_df=top_books_df)
 
 # Read CSV functions #
-
 def getBooks():
     booksCsv = "data/amazon_books.csv"
     return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
-
-def remove_duplicates(df):
-    unique_titles = []
-    unique_rows = []
-    for index, row in df.iterrows():
-        # Removes all special characters and everything inside parentheses for better comparison
-        cleaned_title = re.sub(r'\([^()]*\)', '', row['Title']).strip()
-        similar_titles = [fuzz.ratio(cleaned_title.lower(), title.lower()) for title in unique_titles]
-        if not any(similarity > 60 for similarity in similar_titles):
-            unique_titles.append(cleaned_title)
-            unique_rows.append(row)
-    # Creates a new DataFrame from the unique rows
-    unique_books = pd.DataFrame(unique_rows, columns=df.columns)
-    return unique_books
 
 def getRatings():
     booksCsv = "data/amazon_ratings.csv"
@@ -76,11 +52,28 @@ def printTopReadCategories(dfBooks):
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
 
-def displayTopRev(dfBooks, category : str):
-    filterCategories = dfBooks['categories'] == f"['{category}']"
+def getTopReviews(dfBooks, category : str):
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
     dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
     return dfBooksCategories_sorted.head(30)
+
+def printTopBooksByReview(dfBooks, category : str, dfRatings):
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
+    dfBooksCategories = dfBooks[filterCategories]
+
+    dfRatingsPerBook = dfRatings.groupby(CSV_RATING_COLUMN_BOOK_TITLE).size()
+    # Filter by enough number of reviews
+    dfRatingsPerBook = dfRatingsPerBook[dfRatingsPerBook > 15].index
+    dfRatingsPerBook = dfRatings[dfRatings[CSV_RATING_COLUMN_BOOK_TITLE].isin(dfRatingsPerBook)]
+    
+    dfBooksCategoriesRatings = pd.merge(dfBooksCategories, dfRatingsPerBook, on=CSV_RATING_COLUMN_BOOK_TITLE, how='inner')
+
+    dfBooksCategoriesRatingsGroupByTitle = dfBooksCategoriesRatings.groupby(CSV_RATING_COLUMN_BOOK_TITLE)
+    dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitle[CSV_RATING_COLUMN_REVIEW_SCORE].mean()
+    dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitleAverageScore.sort_values(ascending=False)
+
+    print(dfBooksCategoriesRatingsGroupByTitleAverageScore.head(40))
 
 def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
@@ -98,11 +91,18 @@ def printBestUsersRatings(dfRatings):
 
 
 # MAIN CODE #
+print('flask')
 if __name__ == '__main__':
     app.run(debug=True)
 
-  #  dfBooks = getBooks()
-   # dfRatings = getRatings()
+# Unit Tests
+
+# Retrieve CSV 
+# dfBooks = getBooks()
+# dfRatings = getRatings()
+
+
+# Print some basic needs
 
 # dfAuthorBooks = getAuthorBooks(dfBooks, "")
 # print(dfAuthorBooks)
@@ -112,8 +112,11 @@ if __name__ == '__main__':
 
 # printTopReadCategories(dfBooks)
 
-# displayTopRev(dfBooks, 'Fiction')
+# dfTopReviews = getTopReviews(dfBooks, CATEGORY_FICTION)
+# print(dfTopReviews)
 
 # printSpecificUserRatings(dfRatings)
 
 # printBestUsersRatings(dfRatings)
+
+# printTopBooksByReview(dfBooks, CATEGORY_FICTION, dfRatings)
