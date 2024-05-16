@@ -77,7 +77,18 @@ def printTopReadCategories(dfBooks):
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
 
+def printTopRevFiction(dfBooks):
+    filterCategoriesFiction = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == "['Fiction']"
+    dfBooksCategoriesFiction = dfBooks[filterCategoriesFiction]
+    dfBooksCategoriesFiction_sorted = dfBooksCategoriesFiction.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
+    print(dfBooksCategoriesFiction_sorted.head(30))
 
+def printTopRev(dfBooks, category : str):
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
+    dfBooksCategories = dfBooks[filterCategories]
+    dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
+    print(dfBooksCategories_sorted.head(30))
+    
 def displayTopRev(dfBooks, category : str, page : int):
     filterCategories = dfBooks['categories'] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
