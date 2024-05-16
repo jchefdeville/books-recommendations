@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import pandas as pd
 from fuzzywuzzy import fuzz
 import re
@@ -19,10 +19,11 @@ app = Flask(__name__)
 # temporarily prints out the top fiction books in brec.html>
 @app.route('/')
 def Brec():
-    top_books_df = displayTopRev(getBooks(), 'Fiction')
+    # Get the page number from the query parameters, default to 1
+    page = request.args.get('page', default=1, type=int)
+    top_books_df = displayTopRev(getBooks(), 'Fiction', page)
     unique_books_df = remove_duplicates(top_books_df)
-    return render_template('Brec.html', top_books_df=unique_books_df)
-    
+    return render_template('Brec.html', top_books_df=unique_books_df, page=page)
 
 # detecting duplicates
 def titleCompare(title1, title2):
@@ -76,23 +77,15 @@ def printTopReadCategories(dfBooks):
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
 
-def printTopRevFiction(dfBooks):
-    filterCategoriesFiction = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == "['Fiction']"
-    dfBooksCategoriesFiction = dfBooks[filterCategoriesFiction]
-    dfBooksCategoriesFiction_sorted = dfBooksCategoriesFiction.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
-    print(dfBooksCategoriesFiction_sorted.head(30))
-    
-def printTopRev(dfBooks, category : str):
-    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
-    dfBooksCategories = dfBooks[filterCategories]
-    dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
-    print(dfBooksCategories_sorted.head(30))
 
-def displayTopRev(dfBooks, category : str):
+def displayTopRev(dfBooks, category : str, page : int):
     filterCategories = dfBooks['categories'] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
+    pagelimit = 30
+    start = (page - 1) *pagelimit
+    end = start + pagelimit
     dfBooksCategories_sorted = dfBooksCategories.sort_values(by='ratingsCount', ascending=False)
-    return dfBooksCategories_sorted.head(30)
+    return dfBooksCategories_sorted.iloc[start:end]
 
 def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
