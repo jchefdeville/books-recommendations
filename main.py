@@ -66,7 +66,7 @@ def getAuthorBooks(dfBooks, author):
 
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
 
-def printPopularBooks(dfBooks, author):
+def printPopularBooksByAuthor(dfBooks, author):
     author = 'J.K. Rowling'
     dfBooksAuthor = getAuthorBooks(dfBooks, author)
     print(dfBooksAuthor.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False).head(10))
@@ -118,6 +118,16 @@ def printTopBooksByReview(dfBooks, category : str, dfRatings):
 
     print(dfBooksCategoriesRatingsGroupByTitleAverageScore.head(40))
 
+def printUserFavoriteCategory(dfBooks, dfRatings):
+    userId = "A25HYPL2XKQPZB"
+    filterUserRatings = dfRatings[CSV_RATING_COLUMN_USER_ID] == userId
+    dfUserRatings = dfRatings[filterUserRatings]
+
+    dfUserBooksRatings = pd.merge(dfBooks, dfUserRatings, on=CSV_RATING_COLUMN_BOOK_TITLE, how='inner')
+    dfUserBooksRatingsGroupByCategories = dfUserBooksRatings.groupby(CSV_BOOK_COLUMN_CATEGORIES).size().sort_values(ascending=False)
+
+    print(dfUserBooksRatingsGroupByCategories.head(5))
+
 
 def printSpecificUserRatings(dfRatings):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
@@ -143,7 +153,7 @@ print('flask')
 
 # Retrieve CSV 
 dfBooks = getBooks()
-# dfRatings = getRatings()
+dfRatings = getRatings()
 
 
 # Print some basic needs
@@ -165,4 +175,6 @@ dfBooks = getBooks()
 
 # printTopBooksByReview(dfBooks, CATEGORY_FICTION, dfRatings)
 
-printPopularBooks(dfBooks, "")
+# printPopularBooksByAuthor(dfBooks, "")
+
+printUserFavoriteCategory(dfBooks, dfRatings)
