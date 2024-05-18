@@ -58,9 +58,12 @@ def getRatings():
     return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
 
 def getAuthorBooks(dfBooks, author):
-    authors = "['Neal Shusterman']"
-    print("Filter by authors" + authors)
-    filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS] == authors
+    if (author == ""):
+        author = "'Georgetta Jaquith Walker"
+    print("Filter by author : " + author)
+
+    filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS].str.contains(author, regex=True, na=False)
+
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
 
 def getBookRatings(dfRatings):
@@ -130,20 +133,20 @@ def printBestUsersRatings(dfRatings):
 
 # MAIN CODE #
 print('flask')
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+    # app.run(debug=True)
 
 # Unit Tests
 
 # Retrieve CSV 
-# dfBooks = getBooks()
+dfBooks = getBooks()
 # dfRatings = getRatings()
 
 
 # Print some basic needs
 
-# dfAuthorBooks = getAuthorBooks(dfBooks, "")
-# print(dfAuthorBooks)
+dfAuthorBooks = getAuthorBooks(dfBooks, "")
+print(dfAuthorBooks)
 
 # dfBookRatings = getBookRatings(dfRatings)
 # print(dfBookRatings)
