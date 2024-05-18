@@ -66,6 +66,11 @@ def getAuthorBooks(dfBooks, author):
 
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
 
+def printPopularBooks(dfBooks, author):
+    author = 'J.K. Rowling'
+    dfBooksAuthor = getAuthorBooks(dfBooks, author)
+    print(dfBooksAuthor.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False).head(10))
+
 def getBookRatings(dfRatings):
     bookName = "Dark Matter"
     print("Filter by bookName" + bookName)
@@ -80,8 +85,6 @@ def printTopReadCategories(dfBooks):
 
     # Print top10 categories read DESC
     print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
-
-
     
 def displayTopRev(dfBooks, category : str, page : int):
     filterCategories = dfBooks['categories'] == f"['{category}']"
@@ -145,8 +148,8 @@ dfBooks = getBooks()
 
 # Print some basic needs
 
-dfAuthorBooks = getAuthorBooks(dfBooks, "")
-print(dfAuthorBooks)
+# dfAuthorBooks = getAuthorBooks(dfBooks, "")
+# print(dfAuthorBooks)
 
 # dfBookRatings = getBookRatings(dfRatings)
 # print(dfBookRatings)
@@ -161,3 +164,5 @@ print(dfAuthorBooks)
 # printBestUsersRatings(dfRatings)
 
 # printTopBooksByReview(dfBooks, CATEGORY_FICTION, dfRatings)
+
+printPopularBooks(dfBooks, "")
