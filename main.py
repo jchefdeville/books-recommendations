@@ -3,12 +3,13 @@ import pandas as pd
 from fuzzywuzzy import fuzz
 import re
 
+CSV_BOOK_COLUMN_TITLE = "Title"
 CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
 CSV_BOOK_COLUMN_CATEGORIES = "categories"
 CSV_BOOK_COLUMN_AUTHORS = "authors"
 CSV_BOOK_COLUMN_RATINGS_COUNT = "ratingsCount"
 
-CSV_RATING_COLUMN_BOOK_TITLE = "Title"
+CSV_RATING_COLUMN_BOOK_TITLE = CSV_BOOK_COLUMN_TITLE
 CSV_RATING_COLUMN_USER_ID = "User_id"
 CSV_RATING_COLUMN_REVIEW_SCORE = "review/score"
 
@@ -96,13 +97,13 @@ def displayTopRev(dfBooks, category : str, page : int):
     return dfBooksCategories_sorted.iloc[start:end]
 
 def getTopReviews(dfBooks, category: str):
-    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == category
     dfBooksCategories = dfBooks[filterCategories]
     dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
-    return dfBooksCategories_sorted.head(30)
+    return dfBooksCategories_sorted
 
 def getTopBooksByScore(dfBooks, category: str, dfRatings):
-    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == category
     dfBooksCategories = dfBooks[filterCategories]
 
     dfRatingsPerBook = dfRatings.groupby(CSV_RATING_COLUMN_BOOK_TITLE).size()
@@ -116,22 +117,19 @@ def getTopBooksByScore(dfBooks, category: str, dfRatings):
     dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitle[CSV_RATING_COLUMN_REVIEW_SCORE].mean()
     return dfBooksCategoriesRatingsGroupByTitleAverageScore.sort_values(ascending=False)
 
-def printUserFavoriteCategory(dfBooks, dfRatings):
-    userId = "A25HYPL2XKQPZB"
+def getUserFavoriteCategory(dfBooks, dfRatings, userId):
     filterUserRatings = dfRatings[CSV_RATING_COLUMN_USER_ID] == userId
     dfUserRatings = dfRatings[filterUserRatings]
 
     dfUserBooksRatings = pd.merge(dfBooks, dfUserRatings, on=CSV_RATING_COLUMN_BOOK_TITLE, how='inner')
     dfUserBooksRatingsGroupByCategories = dfUserBooksRatings.groupby(CSV_BOOK_COLUMN_CATEGORIES).size().sort_values(ascending=False)
 
-    print(dfUserBooksRatingsGroupByCategories.head(5))
+    return dfUserBooksRatingsGroupByCategories
 
-
-def printSpecificUserRatings(dfRatings):
-    filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == "A1TZ2SK0KJLLAV"
+def getSpecificUserRatings(dfRatings, userId):
+    filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == userId
     dfRatingsUserId = dfRatings[filterUserId]
-
-    print(dfRatingsUserId)
+    return dfRatingsUserId
 
 def printBestUsersRatings(dfRatings):
     dfRatingsGroupByUserId = dfRatings[CSV_RATING_COLUMN_USER_ID].value_counts()
@@ -149,6 +147,53 @@ def printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION:str):
     print("Books by reviews")
     dfBooksReview = getTopReviews(dfBooks, CATEGORY_FICTION)
     print(dfBooksReview.head(10))
+
+
+# Nice Function
+def printRecommandedBooksForUser(dfBooks, dfRatings, userId):
+    favoriteCategories = getUserFavoriteCategory(dfBooks, dfRatings, userId)
+    favoriteCategory = favoriteCategories.idxmax()
+    print(f"Favorite category for user {userId} : {favoriteCategory}")
+
+    booksRead = getSpecificUserRatings(dfRatings, userId)
+
+    dfBooksScore = getTopBooksByScore(dfBooks, favoriteCategory, dfRatings)
+    dfBooksReview = getTopReviews(dfBooks, favoriteCategory)
+
+    recommandedBooks = []
+    nbRecommandedBooks = len(recommandedBooks)
+    
+    # TO REFACTO
+    while (nbRecommandedBooks < 5):
+        recommandedBook = dfBooksScore.index[nbRecommandedBooks]
+
+        # if might not be working
+        if (recommandedBook in booksRead):
+            print(f"already read {recommandedBook}")
+        else:
+            recommandedBooks.append(recommandedBook)
+
+        nbRecommandedBooks = len(recommandedBooks)
+        
+    while (nbRecommandedBooks < 10):
+        index_recommended = dfBooksReview.index[nbRecommandedBooks - 5]
+        recommandedBook = dfBooksReview.loc[index_recommended, CSV_BOOK_COLUMN_TITLE]
+
+        # if might not be working
+        if (recommandedBook in booksRead):
+            print(f"already read {recommandedBook}")
+        else:
+            recommandedBooks.append(recommandedBook)
+
+        nbRecommandedBooks = len(recommandedBooks)
+        
+    print(f"Recommanded {favoriteCategory} books")
+    print(recommandedBooks)
+        
+
+
+    
+
 
 
 # MAIN CODE #
@@ -176,7 +221,8 @@ dfRatings = getRatings()
 # dfTopReviews = getTopReviews(dfBooks, CATEGORY_FICTION)
 # print(dfTopReviews)
 
-# printSpecificUserRatings(dfRatings)
+# userId = "A25HYPL2XKQPZB"
+# getSpecificUserRatings(dfRatings, userId)
 
 # printBestUsersRatings(dfRatings)
 
@@ -184,6 +230,9 @@ dfRatings = getRatings()
 
 # printPopularBooksByAuthor(dfBooks, "")
 
-# printUserFavoriteCategory(dfBooks, dfRatings)
+# getUserFavoriteCategory(dfBooks, dfRatings)
 
-printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION)
+# printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION)
+
+userId = "A25HYPL2XKQPZB"
+printRecommandedBooksForUser(dfBooks, dfRatings, userId)
