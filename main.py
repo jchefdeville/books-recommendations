@@ -95,13 +95,13 @@ def displayTopRev(dfBooks, category : str, page : int):
     dfBooksCategories_sorted = dfBooksCategories.sort_values(by='ratingsCount', ascending=False)
     return dfBooksCategories_sorted.iloc[start:end]
 
-def getTopReviews(dfBooks, category : str):
+def getTopReviews(dfBooks, category: str):
     filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
     dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
     return dfBooksCategories_sorted.head(30)
 
-def printTopBooksByReview(dfBooks, category : str, dfRatings):
+def getTopBooksByScore(dfBooks, category: str, dfRatings):
     filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
 
@@ -114,9 +114,7 @@ def printTopBooksByReview(dfBooks, category : str, dfRatings):
 
     dfBooksCategoriesRatingsGroupByTitle = dfBooksCategoriesRatings.groupby(CSV_RATING_COLUMN_BOOK_TITLE)
     dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitle[CSV_RATING_COLUMN_REVIEW_SCORE].mean()
-    dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitleAverageScore.sort_values(ascending=False)
-
-    print(dfBooksCategoriesRatingsGroupByTitleAverageScore.head(40))
+    return dfBooksCategoriesRatingsGroupByTitleAverageScore.sort_values(ascending=False)
 
 def printUserFavoriteCategory(dfBooks, dfRatings):
     userId = "A25HYPL2XKQPZB"
@@ -142,6 +140,15 @@ def printBestUsersRatings(dfRatings):
     userIdMostRatings = dfRatingsGroupByUserId.idxmax()
     dfRatingsUserIdMostRatings = dfRatings[dfRatings[CSV_RATING_COLUMN_USER_ID] == userIdMostRatings]
     print(dfRatingsUserIdMostRatings.head(50))
+
+def printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION:str):
+    dfBooksScore = getTopBooksByScore(dfBooks, CATEGORY_FICTION, dfRatings)
+    print("Books by score")
+    print(dfBooksScore.head(10))
+
+    print("Books by reviews")
+    dfBooksReview = getTopReviews(dfBooks, CATEGORY_FICTION)
+    print(dfBooksReview.head(10))
 
 
 # MAIN CODE #
@@ -173,8 +180,10 @@ dfRatings = getRatings()
 
 # printBestUsersRatings(dfRatings)
 
-# printTopBooksByReview(dfBooks, CATEGORY_FICTION, dfRatings)
+# print(getTopBooksByScore(dfBooks, CATEGORY_FICTION, dfRatings).head(40))
 
 # printPopularBooksByAuthor(dfBooks, "")
 
-printUserFavoriteCategory(dfBooks, dfRatings)
+# printUserFavoriteCategory(dfBooks, dfRatings)
+
+printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION)
