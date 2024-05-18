@@ -169,7 +169,7 @@ def printRecommandedBooksForUser(dfBooks, dfRatings, userId):
 
         # if might not be working
         if (recommandedBook in booksRead):
-            print(f"already read {recommandedBook}")
+            print(f"already read {recommandedBook}. DO SOMETHING")
         else:
             recommandedBooks.append(recommandedBook)
 
@@ -181,7 +181,9 @@ def printRecommandedBooksForUser(dfBooks, dfRatings, userId):
 
         # if might not be working
         if (recommandedBook in booksRead):
-            print(f"already read {recommandedBook}")
+            print(f"already read {recommandedBook}. DO SOMETHING")
+        # if (recommandedBook in recommandedBook):
+        #    print(f"already recommanded {recommandedBook}. DO SOMETHING")
         else:
             recommandedBooks.append(recommandedBook)
 
