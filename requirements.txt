@@ -1,3 +1,4 @@
 pandas
 flask
 fuzzywuzzy
+python-Levenshtein
