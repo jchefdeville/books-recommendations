@@ -4,6 +4,8 @@ Goal : Recommending books with Python using Amazon Books Dataset from Kaggle web
 
 Open for contribution, read opened issues
 
+If interested in one, comment and I'll assign it to you.
+
 ```
 pip install -r requirements.txt
 ```
