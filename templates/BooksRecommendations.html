@@ -1,0 +1,26 @@
+<!--TODO: add buttons for different filtering options, ensure that elipses allow you to expand the description-->
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>TODO</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <style>.description-column {width: 500px;}</style>
+    </head>
+
+    <body>
+        <header>
+            <div class="brand">
+                <a id="main-logo" href=""><img src="/img/main-logo.png" alt="Book Recommendation Logo" width="90" height="90"></a>
+                <h1>Book Recommendation</h1>
+            </div>
+        </header>
+        <ul class="list-books">
+            {% for book in recommendedBooks %}
+                <li class="book">{{ book }}</li>
+            {% endfor %}
+        </ul>
+
+    </body>
+</html>
