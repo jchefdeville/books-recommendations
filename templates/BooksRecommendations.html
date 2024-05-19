@@ -5,7 +5,6 @@
     <head>
         <title>TODO</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="{{ url_for('static', filename='script.js') }}"></script>
         <style>.description-column {width: 500px;}</style>
     </head>
 
@@ -16,6 +15,15 @@
                 <h1>Book Recommendation</h1>
             </div>
         </header>
+
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" id="closeBtn" class="closebtn">&times;</a>
+            <a href="/">Home page</a>
+            <a href="/users">Users recommendation book</a>
+        </div>
+        
+        <span id="openBtn" class="openbtn">&#9776;</span>
+
         <ul class="list-books">
             {% for book in recommendedBooks %}
                 <li class="book">{{ book }}</li>
@@ -24,3 +32,5 @@
 
     </body>
 </html>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
