@@ -15,6 +15,19 @@ CSV_RATING_COLUMN_REVIEW_SCORE = "review/score"
 
 CATEGORY_FICTION = "Fiction"
 
+# Read CSV functions #
+def getBooks():
+    booksCsv = "data/amazon_books.csv"
+    return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
+
+def getRatings():
+    booksCsv = "data/amazon_ratings.csv"
+    return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
+
+# Retrieve CSV 
+dfBooks = getBooks()
+dfRatings = getRatings()
+
 # flask call
 app = Flask(__name__)
 
@@ -24,9 +37,15 @@ app = Flask(__name__)
 def Brec():
     # Get the page number from the query parameters, default to 1
     page = request.args.get('page', default=1, type=int)
-    top_books_df = displayTopRev(getBooks(), 'Fiction', page)
+    top_books_df = displayTopRev(dfBooks, 'Fiction', page)
     unique_books_df = remove_duplicates(top_books_df)
     return render_template('Brec.html', top_books_df=unique_books_df, page=page)
+
+@app.route('/users')
+def BooksRecommendations():
+    userId = "A25HYPL2XKQPZB"
+    recommendedBooks = getRecommandedBooksForUser(dfBooks, dfRatings, userId)
+    return render_template('BooksRecommendations.html', recommendedBooks=recommendedBooks)
 
 
 # detecting duplicates
@@ -34,11 +53,6 @@ def titleCompare(title1, title2):
     similarity = fuzz.ratio(title1.lower(), title2.lower())
     # Adjust threshold as needed
     return similarity > 80
-
-# Read CSV functions #
-def getBooks():
-    booksCsv = "data/amazon_books.csv"
-    return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
 
 def remove_duplicates(df):
     unique_titles = []
@@ -54,9 +68,6 @@ def remove_duplicates(df):
     unique_books = pd.DataFrame(unique_rows, columns=df.columns)
     return unique_books
 
-def getRatings():
-    booksCsv = "data/amazon_ratings.csv"
-    return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
 
 def getAuthorBooks(dfBooks, author):
     if (author == ""):
@@ -150,7 +161,11 @@ def printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION:str):
 
 
 # Nice Function
-def printRecommandedBooksForUser(dfBooks, dfRatings, userId):
+def getRecommandedBooksForUser(dfBooks, dfRatings, userId):
+
+    if userId == "":
+        userId = "A25HYPL2XKQPZB"
+
     favoriteCategories = getUserFavoriteCategory(dfBooks, dfRatings, userId)
     favoriteCategory = favoriteCategories.idxmax()
     print(f"Favorite category for user {userId} : {favoriteCategory}")
@@ -191,6 +206,8 @@ def printRecommandedBooksForUser(dfBooks, dfRatings, userId):
         
     print(f"Recommanded {favoriteCategory} books")
     print(recommandedBooks)
+
+    return recommandedBooks
         
 
 
@@ -204,11 +221,6 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 # Unit Tests
-
-# Retrieve CSV 
-#dfBooks = getBooks()
-#dfRatings = getRatings()
-
 
 # Print some basic needs
 
@@ -237,4 +249,4 @@ if __name__ == '__main__':
 # printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION)
 
 #userId = "A25HYPL2XKQPZB"
-#printRecommandedBooksForUser(dfBooks, dfRatings, userId)
+#getRecommandedBooksForUser(dfBooks, dfRatings, userId)
