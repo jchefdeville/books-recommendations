@@ -15,3 +15,7 @@ python .\main.py
 Project started on May, 12th 2024
 
 Don't hesitate to contact me.
+
+
+LFS seems to be disable
+Bandwidth: 1.58 GB / 1 GB (158%)
