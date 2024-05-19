@@ -39,10 +39,12 @@
                     <li class="plublished"><span>{{ row['publishedDate']|default('N/A') }}</span></li>
                     <li class="categories"><span>{{ row['categories']|default('N/A') }}</span></li>
                 </ul>
-                <div class="description">
-                    <p>{{ row['description'][:300] }}<span id="dots-{{ index }}">...</span><span id="more-{{ index }}" style="display: none;">{{ row['description'][300:] }}</span></p>
-                    <button onclick="toggleDescription('{{ index }}')" id="myBtn-{{ index }}">Read more</button>
-                </div>
+                {% if row['description'] and row['description'] is string %}
+                    <div class="description">
+                        <p>{{ row['description'][:300] }}<span id="dots-{{ index }}">...</span><span id="more-{{ index }}" style="display: none;">{{ row['description'][:300] }}</span></p>
+                        <button onclick="toggleDescription('{{ index }}')" id="myBtn-{{ index }}">Read more</button>
+                    </div>
+                {% endif %}
             </div>
             <div class="rating"><span>Rating <br>{{ row['ratingsCount']|default('N/A') }}</span></div>
             {% endfor %}
