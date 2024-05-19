@@ -200,14 +200,14 @@ def printRecommandedBooksForUser(dfBooks, dfRatings, userId):
 
 # MAIN CODE #
 print('flask')
-# if __name__ == '__main__':
-    # app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
 
 # Unit Tests
 
 # Retrieve CSV 
-dfBooks = getBooks()
-dfRatings = getRatings()
+#dfBooks = getBooks()
+#dfRatings = getRatings()
 
 
 # Print some basic needs
@@ -236,5 +236,5 @@ dfRatings = getRatings()
 
 # printRecommandBooksByCategory(dfBooks, dfRatings, CATEGORY_FICTION)
 
-userId = "A25HYPL2XKQPZB"
-printRecommandedBooksForUser(dfBooks, dfRatings, userId)
+#userId = "A25HYPL2XKQPZB"
+#printRecommandedBooksForUser(dfBooks, dfRatings, userId)
