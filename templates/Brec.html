@@ -10,43 +10,36 @@
 </head>
 
 <body>
-    <h1>Welcome to the Book Recommendation Page</h1>
-    <h2>Top Fiction Reviewed Books</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>authors</th>
-                <th>image</th>
-                <th>previewLink</th>
-                <th>publisher</th>
-                <th>publishedDate</th>
-                <th>infoLink</th>
-                <th>Categories</th>
-                <th>ratingsCount</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for index, row in top_books_df.iterrows() %}
-            <tr>
-                <td style = "width: 500px;">{{ row['Title'] }}</td>
-                <td class="description-column">
-                    <p class="description-column">{{ row['description'][:100] }}<span id="dots-{{ index }}">...</span><span id="more-{{ index }}" style="display: none;">{{ row['description'][100:] }}</span></p>
+    <header>
+        <div class="brand">
+            <a id="main-logo" href=""><img src="/img/main-logo.png" alt="Book Recommendation Logo" width="90" height="90"></a>
+            <h1>Book Recommendation</h1>
+            <h2>Top Fiction Reviewed Books</h2>
+        </div>
+    </header>
+    <ul class="list-books">
+     {% for index, row in top_books_df.iterrows() %}
+        <li class="book">
+            <div class="cover">
+                <img src="{{ row['image']|default('path_to_default_image') }}" alt="Book Image" width="200" height="300">
+            </div>
+            <div class="infos">
+                <h3 class="book-title"><a href="{{ row['previewLink']|default('#') }}" target="_blank">{{ row['Title'] }}</a></h3>
+                <h4 class="authors">{{ row['authors']|default('N/A') }}</h4>
+                <ul class="editor-published-collection-categories">
+                    <li class="publisher"><span>{{ row['publisher']|default('N/A') }}</span></li>
+                    <li class="plublished"><span>{{ row['publishedDate']|default('N/A') }}</span></li>
+                    <li class="categories"><span>{{ row['categories']|default('N/A') }}</span></li>
+                </ul>
+                <div class="description">
+                    <p>{{ row['description'][:300] }}<span id="dots-{{ index }}">...</span><span id="more-{{ index }}" style="display: none;">{{ row['description'][300:] }}</span></p>
                     <button onclick="toggleDescription('{{ index }}')" id="myBtn-{{ index }}">Read more</button>
-                </td>                
-                <td>{{ row['authors']|default('N/A') }}</td>
-                <td><img src="{{ row['image']|default('path_to_default_image') }}" alt="Book Image" width="200" height="300"></td>
-                <td><a href="{{ row['previewLink']|default('#') }}" target="_blank">Preview</a></td>
-                <td>{{ row['publisher']|default('N/A') }}</td>
-                <td>{{ row['publishedDate']|default('N/A') }}</td>
-                <td><a href="{{ row['infoLink']|default('#') }}" target="_blank">Info</a></td>
-                <td>{{ row['categories']|default('N/A') }}</td>
-                <td>{{ row['ratingsCount']|default('N/A') }}</td>
-            </tr>
+                </div>
+            </div>
+            <div class="rating"><span>Rating <br>{{ row['ratingsCount']|default('N/A') }}</span></div>
             {% endfor %}
-        </tbody>
-    </table>
+        </li>
+    </ul>
     <div class="button-container">
         {% if page > 1 %}
         <a class="button" href="?page={{ page - 1 }}">Previous</a>
