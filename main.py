@@ -32,14 +32,23 @@ dfRatings = getRatings()
 app = Flask(__name__)
 
 # link python to front end
-# temporarily prints out the top fiction books in brec.html>
+# temporarily prints out the top fiction books in Home.html>
 @app.route('/')
-def Brec():
+def Home():
     # Get the page number from the query parameters, default to 1
     page = request.args.get('page', default=1, type=int)
     top_books_df = displayTopRev('Fiction', page)
     unique_books_df = remove_duplicates(top_books_df)
-    return render_template('Brec.html', top_books_df=unique_books_df, page=page)
+    return render_template('Home.html', top_books_df=unique_books_df, page=page)
+
+@app.route('/books/<int:index>/ratings')
+def Ratings(index):
+    
+    dfBook = getBook(index)
+    dfRatingsBook = getRatingsBook(dfBook[CSV_BOOK_COLUMN_TITLE])
+    print(dfRatingsBook)
+
+    return render_template("Ratings.html", dfRatingsBook=dfRatingsBook)
 
 @app.route('/users')
 def BooksRecommendations():
@@ -83,10 +92,14 @@ def printPopularBooksByAuthor(author):
     dfBooksAuthor = getAuthorBooks(dfBooks, author)
     print(dfBooksAuthor.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False).head(10))
 
-def getBookRatings():
-    bookName = "Dark Matter"
-    print("Filter by bookName" + bookName)
-    filterTitle = dfRatings[CSV_RATING_COLUMN_BOOK_TITLE] == bookName
+def getBook(index:int):
+    return dfBooks.iloc[index]
+
+def getRatingsBook(bookTitle: str):
+    if bookTitle == "":
+        bookTitle = "Dark Matter"
+    print("Get ratings for bookTitle=" + bookTitle)
+    filterTitle = dfRatings[CSV_RATING_COLUMN_BOOK_TITLE] == bookTitle
     return dfRatings[filterTitle]
 
 def printTopReadCategories():
