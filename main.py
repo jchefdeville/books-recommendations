@@ -79,18 +79,17 @@ def remove_duplicates(df):
 
 
 def getAuthorBooks(author):
-    if (author == ""):
-        author = "'Georgetta Jaquith Walker"
     print("Filter by author : " + author)
 
     filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS].str.contains(author, regex=True, na=False)
 
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
 
-def printPopularBooksByAuthor(author):
-    author = 'J.K. Rowling'
-    dfBooksAuthor = getAuthorBooks(dfBooks, author)
-    print(dfBooksAuthor.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False).head(10))
+def getPopularBooksByAuthor(author):
+    if author == "":
+        author = 'J.K. Rowling'
+    dfBooksAuthor = getAuthorBooks(author)
+    return dfBooksAuthor.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
 
 def getBook(index:int):
     return dfBooks.iloc[index]
@@ -102,14 +101,13 @@ def getRatingsBook(bookTitle: str):
     filterTitle = dfRatings[CSV_RATING_COLUMN_BOOK_TITLE] == bookTitle
     return dfRatings[filterTitle]
 
-def printTopReadCategories():
+def getTopReadCategories():
     print("Filter by categories")
     dfBookGroupByCategories = dfBooks.groupby(CSV_BOOK_COLUMN_CATEGORIES)
     # Remove small categories
     dfBookGroupByCategories = dfBookGroupByCategories.filter(lambda dfCategorie: len(dfCategorie) > 1)
 
-    # Print top10 categories read DESC
-    print(dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50))
+    return dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50)
     
 def displayTopRev(category: str, page: int):
     filterCategories = dfBooks['categories'] == f"['{category}']"
@@ -155,22 +153,13 @@ def getSpecificUserRatings(userId):
     dfRatingsUserId = dfRatings[filterUserId]
     return dfRatingsUserId
 
-def printBestUsersRatings():
+def getBestUsersRatings():
     dfRatingsGroupByUserId = dfRatings[CSV_RATING_COLUMN_USER_ID].value_counts()
     print(dfRatingsGroupByUserId.head(10))
 
     userIdMostRatings = dfRatingsGroupByUserId.idxmax()
-    dfRatingsUserIdMostRatings = dfRatings[dfRatings[CSV_RATING_COLUMN_USER_ID] == userIdMostRatings]
-    print(dfRatingsUserIdMostRatings.head(50))
+    return dfRatings[dfRatings[CSV_RATING_COLUMN_USER_ID] == userIdMostRatings]
 
-def printRecommandBooksByCategory(CATEGORY_FICTION: str):
-    dfBooksScore = getTopBooksByScore(CATEGORY_FICTION)
-    print("Books by score")
-    print(dfBooksScore.head(10))
-
-    print("Books by reviews")
-    dfBooksReview = getTopReviews(CATEGORY_FICTION)
-    print(dfBooksReview.head(10))
 
 
 # Nice Function
@@ -240,34 +229,3 @@ def addRecommendedBooks(booksRead, dfBooksScore, dfBooksReview):
 print('flask')
 if __name__ == '__main__':
     app.run(debug=True)
-
-# Unit Tests
-
-# Print some basic needs
-
-# dfAuthorBooks = getAuthorBooks("")
-# print(dfAuthorBooks)
-
-# dfBookRatings = getBookRatings()
-# print(dfBookRatings)
-
-# printTopReadCategories()
-
-# dfTopReviews = getTopReviews(CATEGORY_FICTION)
-# print(dfTopReviews)
-
-# userId = "A25HYPL2XKQPZB"
-# getSpecificUserRatings(userId)
-
-# printBestUsersRatings()
-
-# print(getTopBooksByScore(, CATEGORY_FICTION).head(40))
-
-# printPopularBooksByAuthor("")
-
-# getUserFavoriteCategory()
-
-# printRecommandBooksByCategory(CATEGORY_FICTION)
-
-#userId = "A25HYPL2XKQPZB"
-#getRecommandedBooksForUser(userId)
