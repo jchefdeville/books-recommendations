@@ -1,7 +1,7 @@
+import re
 from flask import Flask, render_template, request
 import pandas as pd
 from fuzzywuzzy import fuzz
-import re
 
 CSV_BOOK_COLUMN_TITLE = "Title"
 CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
@@ -24,7 +24,7 @@ def getRatings():
     booksCsv = "data/amazon_ratings_v2.csv"
     return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
 
-# Retrieve CSV 
+# Retrieve CSV
 dfBooks = getBooks()
 dfRatings = getRatings()
 
@@ -43,7 +43,7 @@ def Home():
 
 @app.route('/books/<int:index>/ratings')
 def Ratings(index):
-    
+
     dfBook = getBook(index)
     dfRatingsBook = getRatingsBook(dfBook[CSV_BOOK_COLUMN_TITLE])
     print(dfRatingsBook)
@@ -108,7 +108,7 @@ def getTopReadCategories():
     dfBookGroupByCategories = dfBookGroupByCategories.filter(lambda dfCategorie: len(dfCategorie) > 1)
 
     return dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50)
-    
+
 def displayTopRev(category: str, page: int):
     filterCategories = dfBooks['categories'] == f"['{category}']"
     dfBooksCategories = dfBooks[filterCategories]
@@ -186,9 +186,9 @@ def addRecommendedBooks(booksRead, dfBooksScore, dfBooksReview):
     nbRecommandedBooks = len(recommandedBooks)
 
     nbDuplicateBooks = 0
-    
+
     # TO REFACTO
-    while (nbRecommandedBooks < 5):
+    while nbRecommandedBooks < 5:
         recommandedBook = dfBooksScore.index[nbRecommandedBooks + nbDuplicateBooks]
 
         # if might not be working
@@ -200,17 +200,17 @@ def addRecommendedBooks(booksRead, dfBooksScore, dfBooksReview):
 
         nbRecommandedBooks = len(recommandedBooks) #usefull ?
         
-    while (nbRecommandedBooks < 10):
+    while nbRecommandedBooks < 10:
         index_recommended = dfBooksReview.index[nbRecommandedBooks - 5]
         recommandedBook = dfBooksReview.loc[index_recommended, CSV_BOOK_COLUMN_TITLE]
 
         # if might not be working
-        if (recommandedBook in booksRead):
+        if recommandedBook in booksRead:
             print(f"already read {recommandedBook}")
             nbDuplicateBooks += 1
-        if (recommandedBook in recommandedBooks):
-           print(f"already recommanded {recommandedBook}")
-           nbDuplicateBooks += 1
+        if recommandedBook in recommandedBooks:
+            print(f"already recommanded {recommandedBook}")
+            nbDuplicateBooks += 1
         else:
             recommandedBooks.append(recommandedBook)
 
