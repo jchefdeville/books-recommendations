@@ -42,20 +42,20 @@ def Home():
     unique_books_df = remove_duplicates(top_books_df)
     return render_template('Home.html', top_books_df=unique_books_df, page=page)
 
-@app.route('/books/<int:index>/ratings')
-def Ratings(index):
+@app.route('/books/<int:index_book>/ratings')
+def Ratings(index_book):
 
-    dfBook = getBook(index)
+    dfBook = getBook(index_book)
     dfRatingsBook = getRatingsBook(dfBook[CSV_BOOK_COLUMN_TITLE])
     print(dfRatingsBook)
 
     return render_template("Ratings.html", dfRatingsBook=dfRatingsBook)
 
-@app.route('/users')
-def BooksRecommendations():
-    userId = "A25HYPL2XKQPZB"
-    recommendedBooks = getRecommandedBooksForUser(userId)
+@app.route('/users/<string:id_user>/recommendations')
+def BooksRecommendations(id_user):
+    recommendedBooks = getRecommandedBooksForUser(id_user)
     return render_template('BooksRecommendations.html', recommendedBooks=recommendedBooks)
+
 
 
 # detecting duplicates
@@ -77,6 +77,8 @@ def remove_duplicates(df):
     # Creates a new DataFrame from the unique rows
     unique_books = pd.DataFrame(unique_rows, columns=df.columns)
     return unique_books
+
+
 
 
 def getAuthorBooks(author):
