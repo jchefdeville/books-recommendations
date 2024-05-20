@@ -28,6 +28,7 @@ def getRatings():
 dfBooks = getBooks()
 dfRatings = getRatings()
 
+
 # flask call
 app = Flask(__name__)
 
