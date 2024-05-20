@@ -9,7 +9,9 @@ If interested in one, comment and I'll assign it to you.
 ```
 pip install -r requirements.txt
 ```
-
+```
+pytest
+```
 ```
 python .\main.py
 ```
