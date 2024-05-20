@@ -5,7 +5,6 @@
 
     <head>
         <title>Recommendation Page</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
         <style>.description-column {width: 500px;}</style>
     </head>
 
@@ -21,6 +20,8 @@
                 </div>
                 <div class="infos">
                     <h3 class="book-title"><a href="{{ row['previewLink']|default('#') }}" target="_blank">{{ row['Title'] }}</a></h3>
+                    <button><a href="books/{{ index }}/ratings" target="_blank">Get Ratings</a></button>
+
                     <h4 class="authors">{{ row['authors']|default('N/A') }}</h4>
                     <ul class="editor-published-collection-categories">
                         <li class="publisher"><span>{{ row['publisher']|default('N/A') }}</span></li>
@@ -33,6 +34,7 @@
                             <button onclick="toggleDescription('{{ index }}')" id="myBtn-{{ index }}">Read more</button>
                         </div>
                     {% endif %}
+
                 </div>
                 <div class="rating"><span>Rating <br>{{ row['ratingsCount']|default('N/A') }}</span></div>
                 {% endfor %}
