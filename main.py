@@ -37,7 +37,8 @@ app = Flask(__name__)
 def Home():
     # Get the page number from the query parameters, default to 1
     page = request.args.get('page', default=1, type=int)
-    top_books_df = displayTopRev('Fiction', page)
+    print(f"page={page}")
+    top_books_df = displayTopRev(CATEGORY_FICTION, page)
     unique_books_df = remove_duplicates(top_books_df)
     return render_template('Home.html', top_books_df=unique_books_df, page=page)
 
@@ -102,7 +103,7 @@ def getRatingsBook(bookTitle: str):
     return dfRatings[filterTitle]
 
 def getTopReadCategories():
-    print("Filter by categories")
+    print("Group by by categories")
     dfBookGroupByCategories = dfBooks.groupby(CSV_BOOK_COLUMN_CATEGORIES)
     # Remove small categories
     dfBookGroupByCategories = dfBookGroupByCategories.filter(lambda dfCategorie: len(dfCategorie) > 1)
@@ -110,12 +111,12 @@ def getTopReadCategories():
     return dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50)
 
 def displayTopRev(category: str, page: int):
-    filterCategories = dfBooks['categories'] == f"['{category}']"
+    filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == category
     dfBooksCategories = dfBooks[filterCategories]
     pagelimit = 30
     start = (page - 1) *pagelimit
     end = start + pagelimit
-    dfBooksCategories_sorted = dfBooksCategories.sort_values(by='ratingsCount', ascending=False)
+    dfBooksCategories_sorted = dfBooksCategories.sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
     return dfBooksCategories_sorted.iloc[start:end]
 
 def getTopReviews(category: str):
@@ -193,7 +194,7 @@ def addRecommendedBooks(booksRead, dfBooksScore, dfBooksReview):
 
         # if might not be working
         if (recommandedBook in booksRead):
-            print(f"already read {recommandedBook}. DO SOMETHING")
+            print(f"already read {recommandedBook}")
             nbDuplicateBooks += 1
         else:
             recommandedBooks.append(recommandedBook)
