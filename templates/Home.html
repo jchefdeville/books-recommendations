@@ -10,7 +10,7 @@
 
     <body>
         
-        <h2>Top Fiction Reviewed Books</h2>
+        <h2>Top {{ category|default('') }} Reviewed Books</h2>
 
         <ul class="list-books">
         {% for index, row in top_books_df.iterrows() %}
