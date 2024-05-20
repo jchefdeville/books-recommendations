@@ -22,11 +22,13 @@
                     <h3 class="book-title"><a href="{{ row['previewLink']|default('#') }}" target="_blank">{{ row['Title'] }}</a></h3>
                     <button><a href="/books/{{ index }}/ratings" target="_blank">Get Ratings</a></button>
 
-                    <h4 class="authors">{{ row['authors']|default('N/A') }}</h4>
+                    <h4 class="authors">
+                        <a href="/authors/{{ row['authors'] }}/books">{{ row['authors']|default('N/A') }}</a>
+                    </h4>
                     <ul class="editor-published-collection-categories">
                         <li class="publisher"><span>{{ row['publisher']|default('N/A') }}</span></li>
                         <li class="plublished"><span>{{ row['publishedDate']|default('N/A') }}</span></li>
-                        <li class="categories"><span>{{ row['categories']|default('N/A') }}</span></li>
+                        <li class="categories"><a href="/categories/{{ row['categories'] }}/books">{{ row['categories']|default('N/A') }}</a></span></li>
                     </ul>
                     {% if row['description'] and row['description'] is string %}
                         <div class="description">
