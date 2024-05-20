@@ -28,9 +28,6 @@ def getRatings():
 dfBooks = getBooks()
 dfRatings = getRatings()
 
-dfRatings = dfRatings.drop(columns=['Id'])
-dfRatings.to_csv('data/amazon_ratings_v2.csv', index=False)
-
 # flask call
 app = Flask(__name__)
 
