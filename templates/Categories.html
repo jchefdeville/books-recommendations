@@ -12,7 +12,11 @@
 
         <ul class="list-books">
             {% for category, count in df_books_top_read_categories.items() %}
-                <li class="book">{{ category }} : {{ count }} rated books</li>
+                <li class="book" style="display: block !important;">
+                    <a href="/categories/{{ category }}/books">{{ category }}</a>
+                    <br />
+                    {{ count }} rated books
+                </li>
             {% endfor %}
         </ul>
 

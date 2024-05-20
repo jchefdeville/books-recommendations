@@ -42,7 +42,16 @@ def Home():
     print(f"page={page}")
     top_books_df = displayTopRev(CATEGORY_FICTION, page)
     unique_books_df = remove_duplicates(top_books_df)
-    return render_template('Home.html', top_books_df=unique_books_df, page=page)
+    return render_template('Home.html', top_books_df=unique_books_df, category=CATEGORY_FICTION, page=page)
+
+@app.route('/categories/<string:category>/books')
+def BooksCategory(category:str):
+    # Get the page number from the query parameters, default to 1
+    page = request.args.get('page', default=1, type=int)
+    print(f"page={page}")
+    top_books_df = displayTopRev(category, page)
+    unique_books_df = remove_duplicates(top_books_df)
+    return render_template('Home.html', top_books_df=unique_books_df, category=category, page=page)
 
 @app.route('/books/<int:index_book>/ratings')
 def Ratings(index_book):

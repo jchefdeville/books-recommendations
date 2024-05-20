@@ -19,6 +19,7 @@ a{
     justify-content: space-between;
     position: relative;
     align-items: center;
+    list-style-type: none;
     padding-bottom: 10px;
     padding-top: 10px;
     margin-top: 15px;
