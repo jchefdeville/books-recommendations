@@ -13,14 +13,6 @@
         
         <h2>Top Fiction Reviewed Books</h2>
 
-        <div id="mySidenav" class="sidenav">
-            <a href="javascript:void(0)" id="closeBtn" class="closebtn">&times;</a>
-            <a href="/">Home page</a>
-            <a href="/users">Users recommendation book</a>
-        </div>
-        
-        <span id="openBtn" class="openbtn">&#9776;</span>
-
         <ul class="list-books">
         {% for index, row in top_books_df.iterrows() %}
             <li class="book">
