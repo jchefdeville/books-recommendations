@@ -15,14 +15,16 @@ CSV_RATING_COLUMN_REVIEW_SCORE = "review/score"
 
 CATEGORY_FICTION = "Fiction"
 
+ENCODING_CSV = 'UTF-8'
+
 # Read CSV functions #
 def getBooks():
     booksCsv = "data/amazon_books_v2.csv"
-    return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
+    return pd.read_csv(booksCsv, encoding=ENCODING_CSV, delimiter=',')
 
 def getRatings():
     booksCsv = "data/amazon_ratings_v2.csv"
-    return pd.read_csv(booksCsv, encoding='ISO-8859-1', delimiter=',')
+    return pd.read_csv(booksCsv, encoding=ENCODING_CSV, delimiter=',')
 
 # Retrieve CSV
 dfBooks = getBooks()
@@ -55,6 +57,11 @@ def Ratings(index_book):
 def BooksRecommendations(id_user):
     recommendedBooks = getRecommandedBooksForUser(id_user)
     return render_template('BooksRecommendations.html', recommendedBooks=recommendedBooks)
+
+@app.route('/categories/')
+def Categories():
+    df_books_top_read_categories = getTopReadCategories()
+    return render_template('Categories.html', df_books_top_read_categories=df_books_top_read_categories)
 
 
 
@@ -105,12 +112,12 @@ def getRatingsBook(bookTitle: str):
     return dfRatings[filterTitle]
 
 def getTopReadCategories():
-    print("Group by by categories")
+    print("Group by categories")
     dfBookGroupByCategories = dfBooks.groupby(CSV_BOOK_COLUMN_CATEGORIES)
     # Remove small categories
     dfBookGroupByCategories = dfBookGroupByCategories.filter(lambda dfCategorie: len(dfCategorie) > 1)
 
-    return dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts().head(50)
+    return dfBookGroupByCategories[CSV_BOOK_COLUMN_CATEGORIES].value_counts()
 
 def displayTopRev(category: str, page: int):
     filterCategories = dfBooks[CSV_BOOK_COLUMN_CATEGORIES] == category
