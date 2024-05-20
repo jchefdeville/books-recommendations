@@ -28,6 +28,21 @@ def getRatings():
 dfBooks = getBooks()
 dfRatings = getRatings()
 
+# Clean dfBooks
+dfBooks = dfBooks.dropna(subset=[CSV_BOOK_COLUMN_RATINGS_COUNT])
+dfBooks = dfBooks[dfBooks[CSV_BOOK_COLUMN_RATINGS_COUNT] > 10]
+
+dfBooks.to_csv('data/amazon_books_v2.csv', index=False)
+
+# Clean dfRatings
+dfRatings = dfRatings.groupby('Id').filter(lambda x: len(x) > 10)
+dfRatings = dfRatings.dropna(subset=[CSV_RATING_COLUMN_REVIEW_SCORE])
+
+dfUserBooksRatings = pd.merge(dfBooks, dfRatings, on=CSV_RATING_COLUMN_BOOK_TITLE, how='inner')
+dfRatings = pd.merge(dfRatings, dfBooks[[CSV_RATING_COLUMN_BOOK_TITLE]], on=CSV_RATING_COLUMN_BOOK_TITLE, how='inner')
+
+dfRatings.to_csv('data/amazon_ratings_v2.csv', index=False)
+
 # flask call
 app = Flask(__name__)
 
