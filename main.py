@@ -53,6 +53,15 @@ def BooksCategory(category:str):
     unique_books_df = remove_duplicates(top_books_df)
     return render_template('Home.html', top_books_df=unique_books_df, category=category, page=page)
 
+@app.route('/authors/<string:author>/books')
+def AuthorBooks(author:str):
+    # Get the page number from the query parameters, default to 1
+    page = request.args.get('page', default=1, type=int)
+    print(f"page={page}")
+    top_books_df = getAuthorBooks(author)
+    unique_books_df = remove_duplicates(top_books_df)
+    return render_template('Home.html', top_books_df=unique_books_df, page=page)
+
 @app.route('/books/<int:index_book>/ratings')
 def Ratings(index_book):
 
@@ -102,7 +111,7 @@ def getAuthorBooks(author):
 
     filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS].str.contains(author, regex=True, na=False)
 
-    return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_PUBLISHED_DATE)
+    return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
 
 def getPopularBooksByAuthor(author):
     if author == "":
