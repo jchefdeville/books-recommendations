@@ -1,0 +1,29 @@
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>RATINGS</title>
+        <style>.description-column {width: 500px;}</style>
+    </head>
+
+    <body>
+
+        <ul class="list-books">
+            {% for index, row in dfRatingsBook.iterrows() %}
+                <li class="book">
+                    <div class="infos">
+                        {{ row['Title'] }}</p>
+                        {{ row['User_id'] }}</p>
+                        {{ row['review/score'] }}</p>
+                        {{ row['review/summary'] }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </body>
+</html>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
