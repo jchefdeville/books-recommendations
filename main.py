@@ -54,7 +54,7 @@ def BooksCategory(category:str):
     unique_books_df = remove_duplicates(top_books_df)
     return render_template('Home.html', top_books_df=unique_books_df, category=category, page=page)
 
-@app.route('/authors')
+@app.route('/authors/')
 def Authors():
     authors = getAuthors()
     return render_template('Authors.html', authors=authors)
