@@ -12,6 +12,30 @@ a{
 
 .button-container {
     text-align: center;
+    position: fixed; /* Fix the button container to the viewport */
+    bottom: 0; /* Position it at the bottom */
+    left: 0;
+    width: 100%; /* Make it span the full width of the screen */
+    padding: 10px 0; /* Add some padding for better appearance */
+    z-index: 1000; /* Ensure it stays above other elements */
+}
+
+
+.button {
+    background-color: #007bff; 
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    border-radius: 5px;
+    width: 100px; /* Set a fixed width for all buttons */
+    display: inline-block;
+    text-align: center;
+}
+
+.button.disabled {
+    background-color: #666;
+    cursor: not-allowed;
 }
 
 .book{
