@@ -4,4 +4,4 @@ __pycache__/
 test/__pycache__
 
 #MACOS
-.DSSTORE
+.DS_Store
