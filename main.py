@@ -70,12 +70,17 @@ def AuthorBooks(author:str):
 
 @app.route('/books/<int:index_book>/ratings')
 def Ratings(index_book):
-
     dfBook = getBook(index_book)
     dfRatingsBook = getRatingsBook(dfBook[CSV_BOOK_COLUMN_TITLE])
     print(dfRatingsBook)
 
     return render_template("Ratings.html", dfRatingsBook=dfRatingsBook)
+
+@app.route('/users/')
+def Users():
+    page = request.args.get('page', default=1, type=int)
+    users = getUsers(page)
+    return render_template('Users.html', users=users, page=page)
 
 @app.route('/users/<string:id_user>/recommendations')
 def BooksRecommendations(id_user):
@@ -177,6 +182,17 @@ def getTopBooksByScore(category: str):
     dfBooksCategoriesRatingsGroupByTitle = dfBooksCategoriesRatings.groupby(CSV_RATING_COLUMN_BOOK_TITLE)
     dfBooksCategoriesRatingsGroupByTitleAverageScore = dfBooksCategoriesRatingsGroupByTitle[CSV_RATING_COLUMN_REVIEW_SCORE].mean()
     return dfBooksCategoriesRatingsGroupByTitleAverageScore.sort_values(ascending=False)
+
+def getUsers(page:int):
+    users = dfRatings[CSV_RATING_COLUMN_USER_ID]
+    users_counts = Counter(users)
+    sorted_users_counts = sorted(users_counts.items(), key=lambda x:x[1], reverse=True)
+
+    pagelimit = 30
+    start = (page - 1) *pagelimit
+    end = start + pagelimit
+
+    return sorted_users_counts[start:end]
 
 def getUserFavoriteCategory(userId):
     filterUserRatings = dfRatings[CSV_RATING_COLUMN_USER_ID] == userId

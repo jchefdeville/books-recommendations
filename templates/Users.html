@@ -1,0 +1,40 @@
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Users</title>
+    <style>
+      .description-column {
+        width: 500px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul class="list-books">
+      {% for user, count in users %}
+      <li class="book" style="display: block !important">
+        <a href="/users/{{user}}/recommendations">{{ user }}</a>
+        <br />
+        {{ count }} ratings
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="button-container">
+        {% if page > 1 %}
+        <a class="button" href="?page={{ page - 1 }}">Previous</a>
+        {% else %}
+        <button class="button disabled" disabled>Previous</button>
+        {% endif %}
+        {% if not users.empty %}
+        <a class="button" href="?page={{ page + 1 }}">Next</a>
+        {% else %}
+        <button class="button disabled" disabled>Next</button>
+        {% endif %}
+    </div>
+  </body>
+</html>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
