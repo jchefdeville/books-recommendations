@@ -2,6 +2,7 @@ import re
 from flask import Flask, render_template, request
 import pandas as pd
 from fuzzywuzzy import fuzz
+from collections import Counter
 
 CSV_BOOK_COLUMN_TITLE = "Title"
 CSV_BOOK_COLUMN_PUBLISHED_DATE = "publishedDate"
@@ -52,6 +53,11 @@ def BooksCategory(category:str):
     top_books_df = displayTopRev(category, page)
     unique_books_df = remove_duplicates(top_books_df)
     return render_template('Home.html', top_books_df=unique_books_df, category=category, page=page)
+
+@app.route('/authors')
+def Authors():
+    authors = getAuthors()
+    return render_template('Authors.html', authors=authors)
 
 @app.route('/authors/<string:author>/books')
 def AuthorBooks(author:str):
@@ -104,7 +110,12 @@ def remove_duplicates(df):
     return unique_books
 
 
-
+# get all authors
+def getAuthors():
+    authors = dfBooks[CSV_BOOK_COLUMN_AUTHORS]
+    author_counts = Counter(authors)
+    sorted_author_counts = sorted(author_counts.items(), key=lambda x:x[1], reverse=True)
+    return sorted_author_counts
 
 def getAuthorBooks(author):
     print("Filter by author : " + author)

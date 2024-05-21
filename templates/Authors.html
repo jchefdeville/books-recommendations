@@ -1,0 +1,27 @@
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Authors</title>
+    <style>
+      .description-column {
+        width: 500px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul class="list-books">
+      {% for author, count in authors %}
+      <li class="book" style="display: block !important">
+        <a href="/authors/{{author}}/books">{{ author }}</a>
+        <br />
+        {{ count }} books
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
