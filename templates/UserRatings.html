@@ -1,0 +1,33 @@
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TODO</title>
+    <style>
+      .description-column {
+        width: 500px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul class="list-books">
+      {% for title, user_id, helpfulness, score, summary in ratings_list %}
+      <li class="book">
+        Title: {{ title }}
+        <br />
+        User ID: {{user_id}}
+        <br />
+        Helpfulness: {{helpfulness}}
+        <br />
+        Score: {{ score }}
+        <br />
+        Summary: {{ summary }}
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>

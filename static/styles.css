@@ -2,7 +2,7 @@ body{
     background-color: #282828;
     color: #dfdfdf;
     list-style: none;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 a{
@@ -125,11 +125,16 @@ a{
 
 
 /* Menu Burger */
+header {
+    margin-top: 10px;
+}
+
+
 .sidenav {
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 1;
+    z-index: 1000;
     top: 0;
     left: 0;
     background-color: #111;
@@ -166,6 +171,10 @@ a{
     color: white;
     padding: 10px 15px;
     border: none;
+    position: fixed; /* Fix the button to the viewport */
+    z-index: 100; /* Ensure it stays above other elements */
+    top: 13px; /* Adjust top position as needed */
+    left: 13px; /* Adjust left position as needed */
 }
 
 .openbtn:hover {
@@ -174,4 +183,9 @@ a{
 
 .sidenav.active {
     width: 250px; /* set width when active */
+}
+
+header {
+    margin-top: 40px; /* Adjust this value based on the height of the .openbtn */
+    padding-top: 20px; /* Optional: Add some padding for better spacing */
 }
