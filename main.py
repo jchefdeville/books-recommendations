@@ -61,12 +61,11 @@ def Authors():
 
 @app.route('/authors/<string:author>/books')
 def AuthorBooks(author:str):
-    # Get the page number from the query parameters, default to 1
-    page = request.args.get('page', default=1, type=int)
-    print(f"page={page}")
     top_books_df = getAuthorBooks(author)
+    print(top_books_df)
     unique_books_df = remove_duplicates(top_books_df)
-    return render_template('Home.html', top_books_df=unique_books_df, page=page)
+    print(unique_books_df)
+    return render_template('Home.html', top_books_df=unique_books_df, page=1)
 
 @app.route('/books/<int:index_book>/ratings')
 def Ratings(index_book):
@@ -125,7 +124,7 @@ def getAuthors():
 def getAuthorBooks(author):
     print("Filter by author : " + author)
 
-    filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS].str.contains(author, regex=True, na=False)
+    filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS].str.contains(author, regex=False, na=False)
 
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
 
@@ -281,6 +280,5 @@ def addRecommendedBooks(booksRead, dfBooksScore, dfBooksReview):
 
 
 # MAIN CODE #
-print('flask')
 if __name__ == '__main__':
-    app.run(debug=True)
+     app.run(debug=True, use_debugger=False)

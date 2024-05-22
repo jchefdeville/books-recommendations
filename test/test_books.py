@@ -45,3 +45,7 @@ def test_getRecommandedBooksForUser():
     userId = "A25HYPL2XKQPZB"
     df = getRecommandedBooksForUser(userId)
     assert len(df) > 0
+
+def test_getAutors():
+    df = getAuthors()
+    assert len(df) > 0
