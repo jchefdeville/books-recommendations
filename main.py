@@ -87,6 +87,12 @@ def BooksRecommendations(id_user):
     recommendedBooks = getRecommandedBooksForUser(id_user)
     return render_template('BooksRecommendations.html', recommendedBooks=recommendedBooks)
 
+@app.route('/users/<string:id_user>/ratings')
+def userRatings(id_user):
+    ratings = getSpecificUserRatings(id_user)
+    ratings_list = list(ratings.to_records(index=False))
+    return render_template('UserRatings.html', ratings_list=ratings_list)
+
 @app.route('/categories/')
 def Categories():
     df_books_top_read_categories = getTopReadCategories()
