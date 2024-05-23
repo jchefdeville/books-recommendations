@@ -28,3 +28,14 @@ function openNav() {
 function closeNav() {
     sidenav.classList.remove("active");
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const starsOuter = document.querySelectorAll('.stars-outer');
+    starsOuter.forEach(starOuter => {
+      const score = parseFloat(starOuter.nextSibling.textContent.trim().match(/\((\d+(\.\d+)?)\)/)[1]);
+      const starInner = starOuter.querySelector('.stars-inner');
+      const starPercentage = (score / 5) * 100;
+      starInner.style.width = `${starPercentage}%`;
+    });
+  });
+  
