@@ -3,27 +3,117 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <title>RATINGS</title>
-        <style>.description-column {width: 500px;}</style>
-    </head>
+<head>
+    <title>Ratings</title>
+    <style>
 
-    <body>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #161616;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
 
+        .list-books {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .book {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .book:last-child {
+            border-bottom: none;
+        }
+
+        .infos {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .infos p {
+            margin: 5px 0;
+        }
+
+        .star-ratings {
+            display: inline-block;
+            position: relative;
+            font-size: 1.5em;
+            color: #ccc;
+        }
+
+        .star-ratings-top {
+            color: #f5a623;
+            position: absolute;
+            z-index: 1;
+            display: block;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .star-ratings-bottom {
+            color: #ccc;
+            z-index: 0;
+        }
+
+        .book-title {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .user-id {
+            color: #b7b7b7;
+        }
+
+        .rating {
+            font-size: 1em;
+            font-weight: bold;
+            color: #6e6e6e;
+        }
+
+        .summary {
+            font-style: italic;
+            color: #8c8a8a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Ratings</h2>
         <ul class="list-books">
             {% for index, row in dfRatingsBook.iterrows() %}
-                <li class="book">
-                    <div class="infos">
-                        {{ row['Title'] }}</p>
-                        {{ row['User_id'] }}</p>
-                        {{ row['review/score'] }}</p>
-                        {{ row['review/summary'] }}</p>
-                    </div>
-                </li>
+            <li class="book">
+                <div class="infos">
+                    <p>
+                        <span class="star-ratings">
+                            <span class="star-ratings-top" style="width: {{ (row['review/score'] / 5) * 100 }}%;">
+                                ★★★★★
+                            </span>
+                            <span class="star-ratings-bottom">
+                                ★★★★★
+                            </span>
+                        </span>
+                    </p>
+                    <p class="book-title">Title: {{ row['Title'] }}</p>
+                    <p class="user-id">User ID: {{ row['User_id'] }}</p>
+                    <p class="rating">Rating: {{ row['review/score'] }}</p>
+                    <p class="summary">Summary: {{ row['review/summary'] }}</p>
+                </div>
+            </li>
             {% endfor %}
         </ul>
+    </div>
 
-    </body>
+</body>
+
 </html>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
