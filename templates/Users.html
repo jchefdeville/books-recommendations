@@ -13,11 +13,15 @@
 
   <body>
     <ul class="list-books">
-      {% for user, count in users %}
+      {% for user in users %}
       <li class="book" style="display: block !important">
-        <a href="/users/{{user}}/recommendations">{{ user }}</a>
+        <a href="/users/{{user.user_id}}/recommendations">{{ user.user_id }}</a>
         <br />
-        <a href="/users/{{user}}/ratings">{{ count }}</a> ratings
+        {% if user.favorite_category %}
+          Favorite Category: <a href="/categories/{{user.favorite_category}}/books">{{ user.favorite_category }}</a>
+          <br />
+        {% endif %}
+        <a href="/users/{{user.user_id}}/ratings">{{ user.count }}</a> ratings
       </li>
       {% endfor %}
     </ul>
