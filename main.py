@@ -247,8 +247,7 @@ def getRecommandedBooksForUser(userId):
     if userId == "":
         userId = "A25HYPL2XKQPZB"
 
-    favoriteCategories = getUserFavoriteCategory(userId)
-    favoriteCategory = favoriteCategories.idxmax()
+    favoriteCategory = getUserFavoriteCategory(userId)
     print(f"Favorite category for user {userId} : {favoriteCategory}")
 
     booksRead = getSpecificUserRatings(userId)
