@@ -203,7 +203,20 @@ def getUsers(page:int):
     start = (page - 1) *pagelimit
     end = start + pagelimit
 
-    return sorted_users_counts[start:end]
+    sorted_users_counts = sorted_users_counts[start:end]
+
+    users_data = []
+
+    for user_id, count in sorted_users_counts:
+        favorite_category = getUserFavoriteCategory(user_id)
+
+        users_data.append({
+            'user_id': user_id,
+            'count': count,
+            'favorite_category': favorite_category
+        })
+
+    return users_data
 
 def getUserFavoriteCategory(userId):
     filterUserRatings = dfRatings[CSV_RATING_COLUMN_USER_ID] == userId
@@ -212,7 +225,7 @@ def getUserFavoriteCategory(userId):
     dfUserBooksRatings = pd.merge(dfBooks, dfUserRatings, on=CSV_RATING_COLUMN_BOOK_TITLE, how='inner')
     dfUserBooksRatingsGroupByCategories = dfUserBooksRatings.groupby(CSV_BOOK_COLUMN_CATEGORIES).size().sort_values(ascending=False)
 
-    return dfUserBooksRatingsGroupByCategories
+    return dfUserBooksRatingsGroupByCategories.idxmax()
 
 def getSpecificUserRatings(userId):
     filterUserId = dfRatings[CSV_RATING_COLUMN_USER_ID] == userId
