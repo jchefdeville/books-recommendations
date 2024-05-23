@@ -71,9 +71,15 @@ def AuthorBooks(author:str):
 def Ratings(index_book):
     dfBook = getBook(index_book)
     dfRatingsBook = getRatingsBook(dfBook[CSV_BOOK_COLUMN_TITLE])
-    print(dfRatingsBook)
-
     return render_template("Ratings.html", dfRatingsBook=dfRatingsBook)
+
+def getBook(index:int):
+    return dfBooks.iloc[index]
+
+def getRatingsBook(bookTitle: str):
+    filterTitle = dfRatings[CSV_RATING_COLUMN_BOOK_TITLE] == bookTitle
+    return dfRatings[filterTitle]
+
 
 @app.route('/users/')
 def Users():
