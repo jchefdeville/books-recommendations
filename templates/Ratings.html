@@ -103,7 +103,7 @@
                         </span>
                     </p>
                     <p class="book-title">Title: {{ row['Title'] }}</p>
-                    <p class="user-id">User ID: {{ row['User_id'] }}</p>
+                    <p class="user-id">User ID: <a href="/users/{{ row['User_id'] }}/ratings">{{ row['User_id'] }}</a></p>
                     <p class="rating">Rating: {{ row['review/score'] }}</p>
                     <p class="summary">Summary: {{ row['review/summary'] }}</p>
                 </div>
