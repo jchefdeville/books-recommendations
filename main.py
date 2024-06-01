@@ -56,8 +56,9 @@ def BooksCategory(category:str):
 
 @app.route('/authors/')
 def Authors():
-    authors = getAuthors()
+    authors = getAuthors1()
     return render_template('Authors.html', authors=authors)
+
 
 @app.route('/authors/<string:author>/books')
 def AuthorBooks(author:str):
@@ -133,11 +134,27 @@ def getAuthors():
     sorted_author_counts = sorted(author_counts.items(), key=lambda x:x[1], reverse=True)
     return sorted_author_counts
 
+from collections import Counter
+
+def getAuthors1():  
+    authors = dfBooks[CSV_BOOK_COLUMN_AUTHORS]
+    #remove NAN
+    authors = authors.dropna()
+    author_image_counts = {}
+    for author, image in zip(authors, dfBooks['image']):
+        if author not in author_image_counts:
+            author_image_counts[author] = {'count': 1, 'image': image}
+        else:
+            author_image_counts[author]['count'] += 1
+
+    sorted_author_counts = sorted(author_image_counts.items(), key=lambda x: x[1]['count'], reverse=True)
+    print(sorted_author_counts[20])
+    return sorted_author_counts
+
+
 def getAuthorBooks(author):
     print("Filter by author : " + author)
-
     filterAuthors = dfBooks[CSV_BOOK_COLUMN_AUTHORS].str.contains(author, regex=False, na=False)
-
     return dfBooks[filterAuthors].sort_values(by=CSV_BOOK_COLUMN_RATINGS_COUNT, ascending=False)
 
 def getPopularBooksByAuthor(author):
@@ -299,10 +316,7 @@ def addRecommendedBooks(booksRead, dfBooksScore, dfBooksReview):
         
 
 
-    
-
-
-
 # MAIN CODE #
 if __name__ == '__main__':
      app.run(debug=True, use_debugger=False)
+     

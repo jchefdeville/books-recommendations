@@ -5,21 +5,84 @@
   <head>
     <title>Authors</title>
     <style>
-      .description-column {
-        width: 500px;
+      .book-details img {
+    max-width: 200px; /* Adjust the width as needed */
+    max-height: 200px; /* Adjust the height as needed */
+}
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+      .list-books {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .book {
+  margin: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 25%; /* Adjust the width as needed */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+      .book a {
+        text-decoration: none;
+        color: blue;
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .book-details {
+        text-align: center;
+      }
+      .book-details span {
+        color: #666;
+        font-size: 14px;
+      }
+      .famous-book {
+        margin-top: 10px;
+        text-align: center;
+      }
+      .famous-book img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+      @media (max-width: 900px) {
+        .book {
+          width: 45%;
+        }
+      }
+      @media (max-width: 600px) {
+        .book {
+          width: 100%;
+        }
       }
     </style>
   </head>
 
   <body>
     <ul class="list-books">
-      {% for author, count in authors %}
-      <li class="book" style="display: block !important">
-        <a href="/authors/{{author}}/books">{{ author }}</a>
-        <br />
-        {{ count }} books
-      </li>
-      {% endfor %}
+      {% for author, details in authors %}
+    <li class="book" style="display: block !important">
+    <div class="book-details" style="text-align: center;"> <!-- Center align all details -->
+        <img src="{{ details['image'] }}" alt="No Book Image" style="max-width: 200px; max-height: 200px; display: block; margin: 0 auto;"> <!-- Make the image larger and center it -->
+        <a href="/authors/{{author}}/books" style="display: block; margin-top: 10px;">{{ author }}</a> <!-- Display author name as block element with margin-top -->
+        <span style="display: block; margin-top: 5px;">{{ details['count'] }} books</span> <!-- Display book count as block element with margin-top -->
+    </div> 
+</li>
+
+{% endfor %}
     </ul>
   </body>
 </html>
